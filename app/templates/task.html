@@ -1,0 +1,56 @@
+<!-- app/templates/task.html -->
+{% extends "base.html" %}
+
+{% block title %}Tasks - ToDo App{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Tasks</h2>
+
+    <!-- Add Task Form -->
+    <form method="POST" action="{{ url_for('task.add') }}" class="flex space-x-2 mb-6">
+        <input type="text" name="title" placeholder="Enter new task..."
+               class="flex-grow border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+               required>
+        <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            Add
+        </button>
+    </form>
+
+    <!-- Task List -->
+    <ul class="space-y-3">
+        {% for task in tasks %}
+        <li class="flex items-center justify-between bg-gray-50 border border-gray-200 p-3 rounded-lg">
+            <div class="flex items-center space-x-3">
+                <!-- Task Title -->
+                <span class="font-medium {{ 'line-through text-gray-500' if task.status == 'Done' else 'text-gray-800' }}">
+                    {{ task.title }}
+                </span>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- Status Dropdown -->
+                <form method="POST" action="{{ url_for('tasks.toggle_status', task_id=task.id) }}">
+                    <select name="status" onchange="this.form.submit()"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
+                        <!-- <option value="Pending" {{ 'selected' if task.status == 'Pending' }}>Pending</option> -->
+                        <option value="Working" {{ 'selected' if task.status == 'Working' }}>Working</option>
+                        <option value="Done" {{ 'selected' if task.status == 'Done' }}>Done</option>
+                    </select>
+                </form>
+
+                <!-- Delete Button -->
+                <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}">
+                    <button type="submit" class="text-red-600 hover:text-red-800">
+                        🗑
+                    </button>
+                </form>
+            </div>
+        </li>
+        {% else %}
+        <p class="text-center text-gray-500">No tasks yet. Add one above!</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
