@@ -5,7 +5,12 @@
 
 {% block content %}
 <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Tasks</h2>
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Your Tasks</h2>
+        <h3 class="text-lg font-medium text-gray-800">
+            Welcome, <span class="text-green-600">{{ session['user'] }}</span> 👋
+        </h3>
+    </div>
 
     <!-- Add Task Form -->
     <form method="POST" action="{{ url_for('task.add') }}" class="flex space-x-2 mb-6">
@@ -31,17 +36,17 @@
 
             <div class="flex items-center space-x-3">
                 <!-- Status Dropdown -->
-                <form method="POST" action="{{ url_for('tasks.toggle_status', task_id=task.id) }}">
+                <form method="POST" action="{{ url_for('task.toggle_task', task_id=task.id) }}">
                     <select name="status" onchange="this.form.submit()"
-                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
-                        <!-- <option value="Pending" {{ 'selected' if task.status == 'Pending' }}>Pending</option> -->
+                        class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="Pending" {{ 'selected' if task.status == 'Pending' }}>Pending</option>
                         <option value="Working" {{ 'selected' if task.status == 'Working' }}>Working</option>
                         <option value="Done" {{ 'selected' if task.status == 'Done' }}>Done</option>
                     </select>
                 </form>
 
                 <!-- Delete Button -->
-                <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}">
+                <form method="POST" action="{{ url_for('task.delete_task', task_id=task.id) }}">
                     <button type="submit" class="text-red-600 hover:text-red-800">
                         🗑
                     </button>

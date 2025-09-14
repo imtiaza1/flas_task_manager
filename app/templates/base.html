@@ -19,7 +19,6 @@
           {% if 'user' in session %}
           <a href="{{ url_for('auth.logout') }}" class="hover:underline"
             >Logout</a
-          >
           {% else %}
           <a href="{{ url_for('auth.login') }}" class="hover:underline"
             >Login</a
@@ -30,16 +29,54 @@
     </nav>
 
     <!-- Flash Messages -->
-    <div class="max-w-3xl mx-auto mt-4 w-full">
-      {% with messages = get_flashed_messages() %} {% if messages %} {% for msg
-      in messages %}
-      <div
-        class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-3"
-      >
-        {{ msg }}
-      </div>
-      {% endfor %} {% endif %} {% endwith %}
-    </div>
+    <!-- Toast Container -->
+<div id="toast-container" class="fixed top-5 right-5 space-y-3 z-50"></div>
+
+<!-- Example Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <script>
+        // Add toast dynamically
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className =
+          "toast px-4 py-3 rounded shadow-lg text-white animate-slideIn";
+        
+        // Colors based on flash category
+        if ("{{category}}" === "success") {
+          toast.classList.add("bg-green-600");
+        } else if ("{{category}}" === "error") {
+          toast.classList.add("bg-red-600");
+        } else {
+          toast.classList.add("bg-yellow-500");
+        }
+
+        toast.innerHTML = "{{ msg }}";
+        container.appendChild(toast);
+
+        // Auto remove after 3s
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "transition", "duration-500");
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      </script>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Tailwind Animation -->
+<style>
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .animate-slideIn {
+    animation: slideIn 0.5s ease-out;
+  }
+</style>
+
+
 
     <!-- Main Content -->
     <main class="flex-grow max-w-3xl mx-auto w-full p-6">
