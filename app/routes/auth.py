@@ -59,6 +59,12 @@ def login():
         }), 200
     else:
         return jsonify({"message": "Invalid credentials", "success": False}), 401
+    
+@auth_bp.route("/check",methods=['GET'])
+def check_login():
+    if "user" in session:
+        return jsonify({"success": True, "user": session["user"]}), 200
+    return jsonify({"success": False}), 401
 
 
 # LOGOUT
