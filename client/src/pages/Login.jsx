@@ -12,7 +12,11 @@ export default function Login({ setIsLoggedIn }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { username, password });
+      const res = await api.post(
+        "/auth/login",
+        { username, password },
+        { withCredentials: true }
+      );
 
       if (res.data.success) {
         toast.success("✅ Login Successful!");

@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
 import api from "./axios";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import Register from "./pages/Register";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
   // 🔑 Check login from backend
   useEffect(() => {
     api
-      .get("/auth/check")
+      .get("/auth/check", { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setIsLoggedIn(true);

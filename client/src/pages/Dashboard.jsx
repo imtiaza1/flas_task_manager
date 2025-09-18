@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -10,27 +10,27 @@ export default function Dashboard({ setIsLoggedIn }) {
   const navigate = useNavigate();
 
   // ✅ Check session each time Dashboard mounts
-  useEffect(() => {
-    api
-      .get("/auth/check")
-      .then((res) => {
-        if (!res.data.success) {
-          setIsLoggedIn(false);
-          navigate("/login");
-        } else {
-          fetchTasks();
-        }
-      })
-      .catch(() => {
-        setIsLoggedIn(false);
-        navigate("/login");
-      });
-  }, [navigate, setIsLoggedIn]);
+  // useEffect(() => {
+  //   api
+  //     .get("/auth/check")
+  //     .then((res) => {
+  //       if (!res.data.success) {
+  //         setIsLoggedIn(false);
+  //         navigate("/login");
+  //       } else {
+  //         fetchTasks();
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setIsLoggedIn(false);
+  //       navigate("/login");
+  //     });
+  // }, [navigate, setIsLoggedIn]);
 
   // Fetch tasks
   const fetchTasks = () => {
     api
-      .get("/task/")
+      .get("/")
       .then((res) => setTasks(res.data.data))
       .catch(() => toast.error("Failed to fetch tasks"));
   };
