@@ -1,0 +1,4 @@
+flask
+sql_alchemy
+jwt
+

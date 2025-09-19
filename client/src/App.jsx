@@ -7,52 +7,40 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 
 function App() {
-  const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState("");
 
-  // 🔑 Check login from backend
   useEffect(() => {
-    api
-      .get("/auth/check", { withCredentials: true })
-      .then((res) => {
+    const checkAuth = async () => {
+      try {
+        const res = await api.get("/auth/check"); // backend pe JWT verify karega
         if (res.data.success) {
           setIsLoggedIn(true);
+          setUser(res.data.user.username);
         } else {
           setIsLoggedIn(false);
         }
-        setLoading(false);
-      })
-      .catch(() => {
+      } catch (err) {
+        console.log(err);
         setIsLoggedIn(false);
-        setLoading(false);
-      });
-  }, []);
+      }
+    };
 
-  if (loading) return <div className="text-white">Checking session...</div>;
-
+    checkAuth();
+  }, [isLoggedIn]);
   return (
     <>
       <Toaster position="top-right" />
       <Routes>
         <Route
           path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Login setIsLoggedIn={setIsLoggedIn} />
-            )
-          }
+          element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
         />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
           element={
-            isLoggedIn ? (
-              <Dashboard setIsLoggedIn={setIsLoggedIn} />
-            ) : (
-              <Navigate to="/login" />
-            )
+            isLoggedIn ? <Dashboard user={user} /> : <Navigate to="/login" />
           }
         />
         <Route path="*" element={<Navigate to="/login" />} />

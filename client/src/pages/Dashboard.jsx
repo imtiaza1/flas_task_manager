@@ -1,40 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
 
-export default function Dashboard({ setIsLoggedIn }) {
+export default function Dashboard({ user }) {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Check session each time Dashboard mounts
-  // useEffect(() => {
-  //   api
-  //     .get("/auth/check")
-  //     .then((res) => {
-  //       if (!res.data.success) {
-  //         setIsLoggedIn(false);
-  //         navigate("/login");
-  //       } else {
-  //         fetchTasks();
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setIsLoggedIn(false);
-  //       navigate("/login");
-  //     });
-  // }, [navigate, setIsLoggedIn]);
-
   // Fetch tasks
   const fetchTasks = () => {
     api
-      .get("/")
+      .get("/task/", { withCredentials: true })
       .then((res) => setTasks(res.data.data))
       .catch(() => toast.error("Failed to fetch tasks"));
   };
-
+  useEffect(() => {
+    fetchTasks();
+  }, []);
   // Add task
   const handleAddTask = async (e) => {
     e.preventDefault();
@@ -78,7 +62,7 @@ export default function Dashboard({ setIsLoggedIn }) {
   // Logout
   const handleLogout = async () => {
     await api.post("/auth/logout");
-    setIsLoggedIn(false);
+    localStorage.clear();
     navigate("/login");
   };
 
@@ -86,6 +70,7 @@ export default function Dashboard({ setIsLoggedIn }) {
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Dashboard</h2>
+        <p>WellCome {user}</p>
         <button
           onClick={handleLogout}
           className="flex items-center bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
