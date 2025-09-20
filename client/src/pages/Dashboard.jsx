@@ -4,12 +4,11 @@ import { FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, setIsLoggedIn }) {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
 
-  // Fetch tasks
   const fetchTasks = () => {
     api
       .get("/task/", { withCredentials: true })
@@ -40,7 +39,7 @@ export default function Dashboard({ user }) {
   // Delete task
   const handleDelete = async (id) => {
     try {
-      await api.post(`/task/delete/${id}`);
+      await api.delete(`/task/delete/${id}`);
       fetchTasks();
       toast.success("Task deleted 🗑️");
     } catch {
@@ -51,7 +50,7 @@ export default function Dashboard({ user }) {
   // Change status
   const handleStatusChange = async (id, status) => {
     try {
-      await api.post(`/task/toggle/${id}`, { status });
+      await api.put(`/task/toggle/${id}`, { status });
       fetchTasks();
       toast.success("Status updated 🔄");
     } catch {
@@ -63,6 +62,7 @@ export default function Dashboard({ user }) {
   const handleLogout = async () => {
     await api.post("/auth/logout");
     localStorage.clear();
+    setIsLoggedIn(false);
     navigate("/login");
   };
 

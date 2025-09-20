@@ -4,7 +4,7 @@ import { FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
 
-export default function Login() {
+export default function Login({ setIsLoggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -17,11 +17,11 @@ export default function Login() {
         { username, password },
         { withCredentials: true }
       );
-
       if (res.data.success) {
         toast.success("✅ Login Successful!");
         localStorage.setItem("user", res.data.user.username);
         navigate("/dashboard");
+        setIsLoggedIn(true);
       } else {
         toast.error(res.data.message);
       }

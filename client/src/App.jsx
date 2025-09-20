@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
 import api from "./axios";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 function App() {
@@ -34,13 +34,23 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+          element={
+            isLoggedIn ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Login setIsLoggedIn={setIsLoggedIn} />
+            )
+          }
         />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
           element={
-            isLoggedIn ? <Dashboard user={user} /> : <Navigate to="/login" />
+            isLoggedIn ? (
+              <Dashboard user={user} setIsLoggedIn={setIsLoggedIn} />
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
         <Route path="*" element={<Navigate to="/login" />} />

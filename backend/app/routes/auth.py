@@ -90,5 +90,13 @@ def check(current_user):
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
     resp = make_response(jsonify({"message": "Logout success", "success": True}))
-    resp.delete_cookie("jwt")
+    resp.set_cookie(
+        "jwt",
+        "",
+        expires=0,
+        httponly=True,
+        samesite="None",
+        secure=True
+    )
     return resp, 200
+
